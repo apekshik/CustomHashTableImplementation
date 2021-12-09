@@ -74,7 +74,8 @@ public class HashTable<T> {
                 maxChain = 1; 
         }
         else { // if there are elements already present in the linked list at the desired index.
-            // first we iterate through the linked list at index and check to see if item already exists in the bucket.
+            // first we iterate through the linked list at desired index and check to see if item 
+            // already exists in the bucket.
             NGen<T> tail = table[index];
             while (tail != null) {
                 if (tail.getData().toString() == item.toString()) 
@@ -93,7 +94,28 @@ public class HashTable<T> {
     } 
 
     // display the entire hash table with the index and number of collisions at each index.
-    public void display() {}
+    public void display() {
+        for (int i = 0; i < table.length; ++i) {
+            System.out.println(i + ": " + chainLength[i]);
+        }
+
+        int avg = -1;
+        System.out.println("longest chain : " + maxChain);
+        System.out.println("unique tokens : " + nUniqueTokens);
+        System.out.println("empty-indices : " + emptyIndices);
+        if (type == "general") {
+            System.out.println("non-empty-indices : " + (GENERAL_DEFAULT - emptyIndices));
+            avg = nUniqueTokens / (GENERAL_DEFAULT - emptyIndices);
+        }
+        else if (type == "specific") {
+            System.out.println("non-empty-indices : " + (SPECIFIC_DEFAULT - emptyIndices));
+            avg = nUniqueTokens / (GENERAL_DEFAULT - emptyIndices);
+        }
+        
+        if (avg == -1) throw new RuntimeException("type entered was obviously bogus");
+        
+        System.out.println("average collision length : " + avg);
+    }
 
     public static void main(String[] args) {
 
