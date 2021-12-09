@@ -3,8 +3,11 @@ import java.security.GeneralSecurityException;
 public class HashTable<T> {
     // 
     private NGen<T> table[]; // the hash table. An array of linked lists basically.
-    private int chainlength[]; // array same length as hash table that stores length of linked list at each index.
+    private int chainLength[]; // array same length as hash table that stores length of linked list at each index.
     private String type = "general"; // initialized to general. But can also take on "special" value.
+    private int nUniqueTokens = 0;
+    private int maxChain = 0;
+    private int emptyIndices = 100;
 
     // Constants 
     private final int GENERAL_DEFAULT = 100;
@@ -15,20 +18,25 @@ public class HashTable<T> {
 
         if (type == "general") {
             table = (NGen<T>[]) new Object[GENERAL_DEFAULT];
-            chainlength = new int[GENERAL_DEFAULT];
-            for (int i = 0; i < chainlength.length; ++i) 
-                chainlength[i] = 0;
+            chainLength = new int[GENERAL_DEFAULT];
+            emptyIndices = GENERAL_DEFAULT;
+            for (int i = 0; i < chainLength.length; ++i) 
+                chainLength[i] = 0;
         } else if (type == "specific") {
             table = (NGen<T>[]) new Object[SPECIFIC_DEFAULT];
-            chainlength = new int[SPECIFIC_DEFAULT];
-            for (int i = 0; i < chainlength.length; ++i) 
-                chainlength[i] = 0;
+            chainLength = new int[SPECIFIC_DEFAULT];
+            emptyIndices = SPECIFIC_DEFAULT;
+            for (int i = 0; i < chainLength.length; ++i) 
+                chainLength[i] = 0;
         }
     }
     
     // Three custom hash functions to implement hashing. They input a key, and output an index for the table[]
     // member variable in this class. 
-    public int h1(T key) {}
+    public int h1(T key) { // really simple hashing function that maps the words to only twenty six indices. Very bad hashing algorithm.
+        String s = key.toString();
+        return (Character.toLowerCase(s.charAt(0)) - 'a');
+    }
     public int h2(T key) {}
     public int h3(T key) {} 
 
@@ -57,18 +65,21 @@ public class HashTable<T> {
             throw new RuntimeException("switch statement in add() method failed for some reason");
 
         // once we've determined the index, the index can either have 0 elements in the linked list or more than 0.
-        // if 0 (so table[index] == null), then we add the first element to this index. Each index houses a dummy head
-        // for a linked list (the chain of hashes mapped to that index)
-        if (table[index].getNext() == null) {
-            table[index].setNext(new NGen<T>(item, null));
-            chainlength[index]++; // increment chainlength because we added a new element.
+        // if 0 (so table[index] == null), then we add the first element to this index. Non-headed linked lists used. 
+        if (table[index] == null) {
+            table[index] = new NGen<T>(item, null);
+            chainLength[index]++; // increment chainLength because we added a new element.
+            emptyIndices--; // since we filled an index with no elements, we decrement emptyIndices by 1. 
+            if (maxChain == 0) 
+                maxChain = 1; 
         }
         else { // if there are elements already present in the linked list at the desired index.
             NGen<T> temp1 = new NGen<T>(item, null);
-            NGen<T> temp2 = table[index].getNext();
-            table[index].setNext(temp1);
+            NGen<T> temp2 = table[index];
+            table[index] = temp1;
             temp1.setNext(temp2);
-            chainlength[index]++; // increment chainlength because we added a new element.
+            chainLength[index]++; // increment chainLength because we added a new element.
+            maxChain = Math.max(maxChain, chainLength[index]); // update longest chain length member variable.
         }
     } 
 
