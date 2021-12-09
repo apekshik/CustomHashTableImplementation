@@ -74,6 +74,15 @@ public class HashTable<T> {
                 maxChain = 1; 
         }
         else { // if there are elements already present in the linked list at the desired index.
+            // first we iterate through the linked list at index and check to see if item already exists in the bucket.
+            NGen<T> tail = table[index];
+            while (tail != null) {
+                if (tail.getData().toString() == item.toString()) 
+                    return; // don't add element since item already exists in the bucket. 
+                tail = tail.getNext();
+            }
+
+            // if it doesn't exist, then we can add it to the linked list at the given index.
             NGen<T> temp1 = new NGen<T>(item, null);
             NGen<T> temp2 = table[index];
             table[index] = temp1;
