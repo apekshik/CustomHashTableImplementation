@@ -1,4 +1,6 @@
 import java.security.GeneralSecurityException;
+import java.util.Scanner;
+import java.io.*;
 
 public class HashTable<T> {
     // 
@@ -37,8 +39,12 @@ public class HashTable<T> {
         String s = key.toString();
         return (Character.toLowerCase(s.charAt(0)) - 'a');
     }
-    public int h2(T key) {}
-    public int h3(T key) {} 
+    public int h2(T key) {
+        return 0;
+    }
+    public int h3(T key) {
+        return 0;
+    } 
 
     // Adding an item to the hash table.
     // Along with providing the item to add, we also mention which hashing algorithm to use to compute the index  
@@ -93,6 +99,7 @@ public class HashTable<T> {
         }
     } 
 
+
     // display the entire hash table with the index and number of collisions at each index.
     public void display() {
         for (int i = 0; i < table.length; ++i) {
@@ -117,8 +124,54 @@ public class HashTable<T> {
         System.out.println("average collision length : " + avg);
     }
 
-    public static void main(String[] args) {
 
+    public static String[] fileToArray(String filePath) {
+        String ar[] = new String[100];
+        Scanner readFile = null;
+        String s;
+        int count = 0;
+
+        System.out.println();
+        System.out.println("Attempting to read from file: " + filePath);
+        try {
+            readFile = new Scanner(new File(filePath));
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("File: " + filePath + " not found");
+            System.exit(1);  
+        }
+
+        System.out.println("Connection to file: " + filePath + " successful");
+        System.out.println();
+        while (readFile.hasNext()) {
+            s = readFile.next();
+            // System.out.println("Token found: " + s);
+            ar[count] = s;
+            count++;
+            // resizing ar if count exceeds the index range for ar 
+            if (count >= ar.length) {
+                String[] temp = ar;
+                ar = new String[ar.length * 2];
+                System.arraycopy(temp, 0, ar, 0, temp.length);
+            }
+        }
+        
+        System.out.println();
+        System.out.println(count + " Tokens found");
+        System.out.println();
+
+        // we finally resize ar to the size that count defines. 
+        String[] temp = ar;
+        ar = new String[count];
+        System.arraycopy(temp, 0, ar, 0, ar.length);
+        return ar;
+    }
+
+    public static void main(String[] args) {
+        String tokens1[], tokens2[]; 
+        tokens2 = HashTable.fileToArray("keywords.txt");
+        for (String s : tokens2) 
+            System.out.println(s);
         return;
     }
 }
