@@ -137,12 +137,12 @@ public class HashTable<T> {
         System.out.println("unique tokens : " + nUniqueTokens);
         System.out.println("empty-indices : " + emptyIndices);
         if (type == "general") {
-            System.out.println("non-empty-indices : " + (GENERAL_DEFAULT - emptyIndices));
-            avg = nUniqueTokens / (GENERAL_DEFAULT - emptyIndices);
+            System.out.println("non-empty-indices : " + (table.length - emptyIndices));
+            avg = nUniqueTokens / (table.length - emptyIndices);
         }
         else if (type == "specific") {
             System.out.println("non-empty-indices : " + (SPECIFIC_DEFAULT - emptyIndices));
-            avg = nUniqueTokens / (GENERAL_DEFAULT - emptyIndices);
+            avg = nUniqueTokens / (table.length - emptyIndices);
         }
         
         if (avg == -1) throw new RuntimeException("type entered was obviously bogus");
@@ -208,7 +208,7 @@ public class HashTable<T> {
             spc.add(tokens2[i], 3); // hash with h3()
         // gen1.display();
         // gen2.display();
-        // gen3.display();
+        gen3.display();
         spc.display();
         return;
     }
